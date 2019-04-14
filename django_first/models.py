@@ -1,10 +1,6 @@
 from django.db import models
 
 
-class Customer(models.Model):
-    name = models.CharField(max_length=100)
-
-
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(
@@ -38,11 +34,6 @@ class Order(models.Model):
         null=True, blank=True
     )
     is_paid = models.BooleanField(default=False)
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name='orders'
-    )
 
     def process(self):
         store = Store.objects.get(location=self.location)
@@ -73,3 +64,14 @@ class OrderItem(models.Model):
         related_name='order_items'
     )
     quantity = models.IntegerField()
+
+
+class Customer(models.Model):
+    name = models.CharField(max_length=100)
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='customers'
+    )
