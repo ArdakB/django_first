@@ -1,10 +1,14 @@
-from django_first.models import Order, OrderItem, Product, Store, StoreItem
+from django_first.models import Order, OrderItem, Product
+from django_first.models import Store, StoreItem, Customer
 
 
 def test_order_process(db):
     product = Product.objects.create(
         name='apple',
         price=10
+    )
+    customer = Customer.objects.create(
+        name='Alice'
     )
     store = Store.objects.create(
         location='Almaty'
@@ -15,7 +19,8 @@ def test_order_process(db):
         quantity=100
     )
     order = Order.objects.create(
-        location='Almaty'
+        location='Almaty',
+        customer=customer
     )
     OrderItem.objects.create(
         order=order,
