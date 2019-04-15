@@ -1,8 +1,11 @@
-from django_first.models import Order, OrderItem, Product, Store, StoreItem,\
-    Customer
+import pytest
 
 
-def test_order_process(db):
+from django_first.models import Order, OrderItem, Product, Store, StoreItem
+
+
+@pytest.fixture
+def data():
     product = Product.objects.create(
         name='apple',
         price=10
@@ -18,16 +21,16 @@ def test_order_process(db):
     order = Order.objects.create(
         location='Almaty'
     )
-    OrderItem.objects.create(
+    order_item = OrderItem.objects.create(
         order=order,
         product=product,
         quantity=10
     )
-    Customer.objects.create(
-        name='Bob',
-        order=order
-    )
+    return product, store, store_item, order, order_item
 
+
+def test_order_process(db, data):
+    product, store, store_item, order, order_item = data
     order.process()
     store_item.refresh_from_db()
     assert order.price == 100
