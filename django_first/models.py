@@ -4,8 +4,7 @@ from django.db import models
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        null=True, blank=True
+        max_digits=10, decimal_places=2
     )
 
 
@@ -73,6 +72,16 @@ class OrderItem(models.Model):
 
 
 class Payment(models.Model):
+    METHOD_CARD = 'card'
+    METHOD_CASH = 'cash'
+    METHOD_QIWI = 'qiwi'
+
+    METHOD_CHOICES = (
+        (METHOD_CARD, METHOD_CARD),
+        (METHOD_CASH, METHOD_CASH),
+        (METHOD_QIWI, METHOD_QIWI)
+    )
+
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE,
         related_name='payments'
@@ -80,6 +89,11 @@ class Payment(models.Model):
     amount = models.DecimalField(
         max_digits=10, decimal_places=2,
         null=True, blank=True
+    )
+    method = models.CharField(
+        max_length=10,
+        choices=METHOD_CHOICES,
+        default=METHOD_CARD
     )
     is_confirmed = models.BooleanField(default=False)
 
