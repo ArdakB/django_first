@@ -2,11 +2,14 @@ import pytest
 
 
 from django_first.models import Order, OrderItem, Product, Store, StoreItem,\
-    Payment
+    Payment, Customer
 
 
 @pytest.fixture
 def data():
+    customer = Customer.objects.create(
+        name='Alice'
+    )
     product = Product.objects.create(
         name='apple',
         price=10
@@ -20,6 +23,7 @@ def data():
         quantity=100
     )
     order = Order.objects.create(
+        customer=customer,
         location='Almaty'
     )
     order_item = OrderItem.objects.create(
