@@ -44,7 +44,10 @@ class Order(models.Model):
     )
 
     def process(self):
-        store = Store.objects.get(location=self.location)
+        try:
+            store = Store.objects.get(location=self.location)
+        except Store.DoesNotExist:
+            raise Exception('Location not available')
         for item in self.order_items.all():
             store_item = StoreItem.objects.get(
                 store=store,
