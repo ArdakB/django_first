@@ -2,12 +2,20 @@ import pytest
 
 
 from django_first.models import Order, OrderItem, Product, Store, StoreItem,\
-    Payment, Customer
+    Payment, Customer, City, Location
 
 from django_first.exceptions import PaymentException, StoreException
 
+
 @pytest.fixture
 def data():
+    city = City.objects.create(
+        name='Almaty'
+    )
+    location = Location.objects.create(
+        city=city,
+        address='Abay 130'
+    )
     customer = Customer.objects.create(
         name='Alice'
     )
@@ -16,7 +24,7 @@ def data():
         price=10
     )
     store = Store.objects.create(
-        location='Almaty'
+        location=location
     )
     store_item = StoreItem.objects.create(
         store=store,
@@ -25,7 +33,7 @@ def data():
     )
     order = Order.objects.create(
         customer=customer,
-        location='Almaty'
+        city=city
     )
     order_item = OrderItem.objects.create(
         order=order,
@@ -94,7 +102,10 @@ def test_order_process_fail_payment_not_confirmed(db, data):
 
 def test_order_process_fail_location_not_available(db, data):
     product, store, store_item, order, order_item, payment = data
-    order.location = 'Astana'
+    city2 = City.objects.create(
+        name='Astana'
+    )
+    order.city = city2
     order.save()
     with pytest.raises(StoreException) as e:
         order.process()

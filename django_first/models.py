@@ -3,6 +3,19 @@ from django.db import models
 from .exceptions import PaymentException, StoreException
 
 
+class City(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class Location(models.Model):
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+        related_name='locations'
+    )
+    address = models.CharField(max_length=100)
+
+
 class Customer(models.Model):
     name = models.CharField(max_length=100)
 
@@ -15,7 +28,11 @@ class Product(models.Model):
 
 
 class Store(models.Model):
-    location = models.CharField(max_length=100)
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.CASCADE,
+        related_name='stores'
+    )
 
 
 class StoreItem(models.Model):
@@ -33,7 +50,11 @@ class StoreItem(models.Model):
 
 
 class Order(models.Model):
-    location = models.CharField(max_length=100)
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+        related_name='orders'
+    )
     price = models.DecimalField(
         max_digits=10, decimal_places=2,
         null=True, blank=True
@@ -47,8 +68,10 @@ class Order(models.Model):
 
     def process(self):
         try:
-            store = Store.objects.get(location=self.location)
-        except Store.DoesNotExist:
+            store = Store.objects.get(
+                location=Location.objects.get(city=self.city)
+            )
+        except (Store.DoesNotExist, Location.DoesNotExist):
             raise StoreException('Location not available')
         for item in self.order_items.all():
             store_item = StoreItem.objects.get(
