@@ -1,5 +1,6 @@
 import pytest
 
+from django.contrib.auth.models import User
 
 from django_first.models import Order, OrderItem, Product, Store, StoreItem,\
     Payment, Customer, City, Location
@@ -16,8 +17,13 @@ def data():
         city=city,
         address='Abay 130'
     )
+    user = User.objects.create_user(
+        username='alice',
+        password='testtest'
+    )
     customer = Customer.objects.create(
-        name='Alice'
+        name='Alice',
+        user=user
     )
     product = Product.objects.create(
         name='apple',
