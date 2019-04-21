@@ -1,0 +1,13 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order</title>
+</head>
+<body>
+	<ul>
+		{% for item in order.order_items.all %}
+		<li>{{ item.product.name }}</li>
+		{% endfor %}
+	</ul>
+</body>
+</html>

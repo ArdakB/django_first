@@ -7,8 +7,15 @@ def test_hello_200(db, client, data):
     assert 'alice' in response
 
 
+def test_order(db, client, data):
+    response = client.get('/orders/1/')
+    assert response.status_code == 200
+    response = response.content.decode('utf-8')
+    assert 'apple' in response
+
+
 def test_django_404(client):
-    response = client.get("/test/")
+    response = client.get('/test/')
     assert response.status_code == 404
 
 
