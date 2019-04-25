@@ -4,7 +4,10 @@ from .models import Order
 
 
 def hello(request):
-    return render(request, 'hello.html')
+    orders = Order.objects.filter(customer__user=request.user)
+    return render(request, 'hello.html', context={
+        'orders': orders
+    })
 
 
 def order(request, order_id):
