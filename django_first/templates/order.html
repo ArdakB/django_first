@@ -5,7 +5,7 @@
 </head>
 <body>
 	<ul>
-		{% for item in order.order_items.all %}
+		{% for item in order.items.all %}
 		<li>{{ item.product.name }}</li>
 		{% endfor %}
 	</ul>

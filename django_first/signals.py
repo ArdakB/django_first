@@ -8,7 +8,7 @@ def order_item_post_save(sender, **kwargs):
     item = kwargs['instance']
     order = item.order
 
-    duplicate = order.order_items.filter(
+    duplicate = order.items.filter(
         product=item.product
     ).exclude(id=item.id).first()
     if duplicate:
@@ -20,5 +20,5 @@ def order_item_post_save(sender, **kwargs):
 
     order.price = sum(
         (item.product.price * item.quantity
-            for item in order.order_items.all())
+            for item in order.items.all())
     )

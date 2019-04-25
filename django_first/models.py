@@ -42,7 +42,7 @@ class StoreItem(models.Model):
     store = models.ForeignKey(
         Store,
         on_delete=models.CASCADE,
-        related_name='store_items'
+        related_name='items'
     )
     product = models.ForeignKey(
         Product,
@@ -76,7 +76,7 @@ class Order(models.Model):
             )
         except (Store.DoesNotExist, Location.DoesNotExist):
             raise StoreException('Location not available')
-        for item in self.order_items.all():
+        for item in self.items.all():
             store_item = StoreItem.objects.get(
                 store=store,
                 product=item.product
@@ -87,7 +87,7 @@ class Order(models.Model):
             store_item.save()
         self.price = sum(
             (item.product.price * item.quantity
-                for item in self.order_items.all())
+                for item in self.items.all())
         )
         confirmed_payments = self.payments.filter(is_confirmed=True)
         paid_amount = sum((payment.amount for payment in confirmed_payments))
@@ -101,7 +101,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name='order_items'
+        related_name='items'
     )
     product = models.ForeignKey(
         Product,

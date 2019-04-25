@@ -21,8 +21,8 @@ def test_order_item_signal_ok(db, data):
         product=product,
         quantity=20
     )
-    assert order.order_items.count() == 1
-    assert order.order_items.first().quantity == 30
+    assert order.items.count() == 1
+    assert order.items.first().quantity == 30
     assert order.price == 300
 
 
