@@ -2,7 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
-from .exceptions import PaymentException, StoreException
+from .exceptions import PaymentException, StoreException, LocationException
 
 
 class City(models.Model):
@@ -70,21 +70,33 @@ class Order(models.Model):
     )
 
     def process(self):
-        try:
-            store = Store.objects.get(
-                location=Location.objects.get(city=self.city)
-            )
-        except (Store.DoesNotExist, Location.DoesNotExist):
-            raise StoreException('Location not available')
+        city = self.city
+        locations = Location.objects.filter(city=city)
+        if locations.count() == 0:
+            raise LocationException('Location not available')
+        stores = Store.objects.filter(location__in=locations)
+        if stores.count() == 0:
+            raise LocationException('Location not available')
         for item in self.items.all():
-            store_item = StoreItem.objects.get(
-                store=store,
+            store_items = StoreItem.objects.filter(
+                store__in=stores,
                 product=item.product
             )
-            if item.quantity > store_item.quantity:
+            store_item_quantity = sum(i.quantity for i in store_items)
+            if item.quantity > store_item_quantity:
                 raise StoreException('Not enough stock')
-            store_item.quantity -= item.quantity
-            store_item.save()
+            difference = item.quantity
+            for store_item in store_items:
+                if store_item.quantity >= difference:
+                    store_item.quantity -= difference
+                    store_item.save()
+                    difference = 0
+                else:
+                    store_item.quantity -= store_item.quantity
+                    store_item.save()
+                    difference -= store_item.quantity
+                if difference == 0:
+                    break
         self.price = sum(
             (item.product.price * item.quantity
                 for item in self.items.all())
