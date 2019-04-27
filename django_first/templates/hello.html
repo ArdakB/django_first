@@ -5,7 +5,7 @@
     <p>Hi, {{ request.user }}</p>
     <ul>
         {% for order in orders %}
-        <li>{{ order_id }}</li>
+        <li><a href="{% url 'orders' order.id %}">{{ order_id }}</a></li>
         {% endfor %}
     </ul>
 
