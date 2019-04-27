@@ -97,11 +97,8 @@ class Order(models.Model):
                     difference -= store_item.quantity
                 if difference == 0:
                     break
-        confirmed_payments = self.payments.filter(is_confirmed=True)
-        paid_amount = sum((payment.amount for payment in confirmed_payments))
-        if paid_amount < self.price:
+        if not self.is_paid:
             raise PaymentException('Not enough money')
-        self.save()
 
 
 class OrderItem(models.Model):
