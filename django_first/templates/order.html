@@ -1,13 +1,10 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Order</title>
-</head>
-<body>
-	<ul>
-		{% for item in order.items.all %}
-		<li>{{ item.product.name }}</li>
-		{% endfor %}
-	</ul>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+    <ul>
+        {% for item in order.items.all %}
+        <li>{{ item.product.name }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

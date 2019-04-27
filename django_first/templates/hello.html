@@ -1,15 +1,12 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Hello</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+
     <p>Hello, world!</p>
     <p>Hi, {{ request.user }}</p>
     <ul>
-    	{% for order in orders %}
-    	<li>{{ order_id }}</li>
-    	{% endfor %}
+        {% for order in orders %}
+        <li>{{ order_id }}</li>
+        {% endfor %}
     </ul>
-</body>
-</html>
+
+{% endblock %}
