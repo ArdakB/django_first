@@ -17,6 +17,17 @@ def test_hello_200(db, client, data):
     assert len(response.cssselect('li')) == orders.count()
 
 
+def test_new_order(db, client, data):
+    client.login(username='alice', password='alice')
+    response = client.post('/', {'city': 1})
+    assert response.status_code == 200
+    response = response.content.decode('utf-8')
+    response = html.fromstring(response)
+    orders = response.cssselect('.list-group-item >a')
+    assert orders[0].text == '1'
+    assert orders[1].text == '2'
+
+
 def test_order_view(db, client, data):
     url = reverse('orders', args=[1])
     response = client.get(url)
