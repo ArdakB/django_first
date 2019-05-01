@@ -1,4 +1,5 @@
 from lxml import html
+from django.urls import reverse
 from django_first.models import Order, Product
 
 
@@ -17,7 +18,8 @@ def test_hello_200(db, client, data):
 
 
 def test_order_view(db, client, data):
-    response = client.get('/orders/1/')
+    url = reverse('orders', args=[1])
+    response = client.get(url)
     assert response.status_code == 200
     response = response.content.decode('utf-8')
     response = html.fromstring(response)
