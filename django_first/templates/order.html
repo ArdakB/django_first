@@ -1,13 +1,16 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Order</title>
-</head>
-<body>
-	<ul>
-		{% for item in order.items.all %}
-		<li>{{ item.product.name }}</li>
-		{% endfor %}
-	</ul>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+    <ul class="list-group">
+        {% for item in order.items.all %}
+        <li class="list-group-item">{{ item.product.name }} {{ item.quantity }}</li>
+        {% endfor %}
+    </ul>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" id="product" name="product"/>
+        <input type="text" id="quantity" name="quantity"/>
+        <input type="submit"/>
+    </form>
+
+{% endblock %}

@@ -1,7 +1,8 @@
 import pytest
 
 from django_first.models import Payment, City, OrderItem
-from django_first.exceptions import PaymentException, StoreException
+from django_first.exceptions import PaymentException, StoreException, \
+    LocationException
 
 
 def test_order_process_ok(db, data):
@@ -81,6 +82,6 @@ def test_order_process_fail_location_not_available(db, data):
     )
     order.city = city2
     order.save()
-    with pytest.raises(StoreException) as e:
+    with pytest.raises(LocationException) as e:
         order.process()
     assert str(e.value) == 'Location not available'

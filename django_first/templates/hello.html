@@ -1,15 +1,18 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Hello</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+
     <p>Hello, world!</p>
     <p>Hi, {{ request.user }}</p>
-    <ul>
-    	{% for order in orders %}
-    	<li>{{ order_id }}</li>
-    	{% endfor %}
+    <ul class="list-group">
+        {% for order in orders %}
+        <li class="list-group-item"><a href="{% url 'orders' order.id %}">{{ order.id }}</a></li>
+        {% endfor %}
     </ul>
-</body>
-</html>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" id="city" name="city"/>
+        <input type="submit"/>
+    </form>
+
+
+{% endblock %}
